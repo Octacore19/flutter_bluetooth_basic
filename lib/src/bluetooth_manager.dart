@@ -20,9 +20,9 @@ class BluetoothManager {
       StreamController.broadcast();
 
   BluetoothManager._() {
-    _channel.setMethodCallHandler((MethodCall call) {
+    _channel.setMethodCallHandler((MethodCall call) async {
       _methodStreamController.add(call);
-      return;
+      return true;
     });
   }
 
@@ -58,7 +58,7 @@ class BluetoothManager {
   /// Starts a scan for Bluetooth Low Energy devices
   /// Timeout closes the stream after a specified [Duration]
   Stream<BluetoothDevice> scan({
-    Duration timeout,
+    Duration? timeout,
   }) async* {
     if (_isScanning.value == true) {
       throw Exception('Another scan is already in progress.');
@@ -111,7 +111,7 @@ class BluetoothManager {
   }
 
   Future startScan({
-    Duration timeout,
+    required Duration timeout,
   }) async {
     await scan(timeout: timeout).drain();
     return _scanResults.value;
